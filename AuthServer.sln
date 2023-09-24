@@ -3,6 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthServer.Domain", "AuthServer.Domain\AuthServer.Domain.csproj", "{863ADD08-D7C5-4244-A83A-2D0799A3593F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthServer.Core", "AuthServer.Core\AuthServer.Core.csproj", "{054C710F-4044-4287-96DF-90AEB3F958DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthServer.Web", "AuthServer.Web\AuthServer.Web.csproj", "{936061A2-9EA2-4C3C-9D48-C669A7462AC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -10,5 +16,19 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{863ADD08-D7C5-4244-A83A-2D0799A3593F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{863ADD08-D7C5-4244-A83A-2D0799A3593F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{863ADD08-D7C5-4244-A83A-2D0799A3593F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{863ADD08-D7C5-4244-A83A-2D0799A3593F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{054C710F-4044-4287-96DF-90AEB3F958DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{054C710F-4044-4287-96DF-90AEB3F958DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{054C710F-4044-4287-96DF-90AEB3F958DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{054C710F-4044-4287-96DF-90AEB3F958DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{936061A2-9EA2-4C3C-9D48-C669A7462AC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{936061A2-9EA2-4C3C-9D48-C669A7462AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{936061A2-9EA2-4C3C-9D48-C669A7462AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{936061A2-9EA2-4C3C-9D48-C669A7462AC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

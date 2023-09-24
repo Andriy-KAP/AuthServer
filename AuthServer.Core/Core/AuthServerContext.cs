@@ -1,0 +1,18 @@
+using AuthServer.Domain.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace AuthServer.Core.Core
+{
+    public class AuthServerContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    {
+        public AuthServerContext(DbContextOptions<AuthServerContext> options) : base(options)
+        {
+
+        }
+    }
+}
