@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Register services
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 //Add database context
 builder.Services.AddDbContext<AuthServerContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

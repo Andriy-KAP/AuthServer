@@ -4,6 +4,7 @@ using AuthServer.Core.Model;
 using AuthServer.Domain.Model;
 using Azure.Core;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,17 @@ namespace AuthServer.Core.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly IEmailService _emailService;
+
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
-        public async Task<IEnumerable<IdentityError>> Register(RegisterModel model)
+        public async Task<IEnumerable<IdentityError>> Register(RegisterModel model, string sheme)
         {
             ApplicationUser user = ApplicationUserConverter.Convert(model);
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);
@@ -33,6 +38,9 @@ namespace AuthServer.Core.Services
             {
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                var callbackUrl = $"https://localhost:7192/api/Account/Confirm?userId={user.Id}&code={code}";
+                await _emailService.SendEmail(user.Email, "Confirm your account", $"<a href='{callbackUrl}'>Confirmation link</a>");
                 return Enumerable.Empty<IdentityError>();
             }
             else

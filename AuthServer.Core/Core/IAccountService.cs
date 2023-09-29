@@ -1,5 +1,6 @@
 ﻿using AuthServer.Core.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace AuthServer.Core.Core
 {
     public interface IAccountService
     {
-        Task<IEnumerable<IdentityError>> Register(RegisterModel model);
+        Task<IEnumerable<IdentityError>> Register(RegisterModel model, string sheme);
         Task<SignInResult> SignIn(SignInModel model);
         Task SignOut();
         bool IsUserSignIn(ClaimsPrincipal principal);

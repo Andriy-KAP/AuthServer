@@ -21,7 +21,8 @@ namespace AuthServer.Web.Controllers
         {
             try
             {
-                IEnumerable<IdentityError> errors = await _accountService.Register(model);
+                
+                IEnumerable<IdentityError> errors = await _accountService.Register(model, HttpContext.Request.Scheme);
                 if (errors.Any())
                 {
                     foreach(var error in errors)
