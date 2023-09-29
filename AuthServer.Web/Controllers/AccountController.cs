@@ -40,6 +40,24 @@ namespace AuthServer.Web.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ConfirmRegistration(string userId, string code)
+        {
+            if (userId == null || code == null)
+                return BadRequest("UserId or code are null");
+            try
+            {
+                var result = await _accountService.ConfirmRegistration(userId, code);
+                if (result.Succeeded)
+                    return Ok();
+                return BadRequest("Something went wrong");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(SignInModel model)
         {

@@ -15,6 +15,7 @@ namespace AuthServer.Core.Core
         Task<IEnumerable<IdentityError>> Register(RegisterModel model, string sheme);
         Task<SignInResult> SignIn(SignInModel model);
         Task SignOut();
+        Task<IdentityResult> ConfirmRegistration(string userId, string code);
         bool IsUserSignIn(ClaimsPrincipal principal);
     }
 }

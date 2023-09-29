@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Policy;
 using System.Text;
@@ -37,9 +38,10 @@ namespace AuthServer.Core.Services
             if (result.Succeeded)
             {
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                byte[] codeGeneratedBytes = Encoding.UTF8.GetBytes(code);
+                var codeEncoded = WebEncoders.Base64UrlEncode(codeGeneratedBytes);
 
-                var callbackUrl = $"https://localhost:7192/api/Account/Confirm?userId={user.Id}&code={code}";
+                var callbackUrl = $"https://localhost:7192/api/Account/ConfirmRegistration?userId={user.Id}&code={codeEncoded}";
                 await _emailService.SendEmail(user.Email, "Confirm your account", $"<a href='{callbackUrl}'>Confirmation link</a>");
                 return Enumerable.Empty<IdentityError>();
             }
@@ -47,6 +49,18 @@ namespace AuthServer.Core.Services
             {
                 return result.Errors;
             }
+        }
+
+        public async Task<IdentityResult> ConfirmRegistration(string userId, string code)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new NullReferenceException("User not found");
+
+            var codeDecodedBytes = WebEncoders.Base64UrlDecode(code);
+            var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
+
+            return await _userManager.ConfirmEmailAsync(user, codeDecoded);
         }
 
         public async Task<SignInResult> SignIn(SignInModel model)

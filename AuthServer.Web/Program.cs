@@ -20,7 +20,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(
         options=>
         {
-            options.SignIn.RequireConfirmedAccount = false;
             options.User.RequireUniqueEmail = true;
         }
     ).AddEntityFrameworkStores<AuthServerContext>()
