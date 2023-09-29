@@ -38,5 +38,44 @@ namespace AuthServer.Web.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(SignInModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _accountService.SignIn(model);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest("Username or password is invalid");
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.SignOut();
+            return Ok();
+        }
+
+        [HttpGet]
+        public bool IsUserSignIn()
+        {
+            return _accountService.IsUserSignIn(User);
+        }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,9 +18,11 @@ namespace AuthServer.Core.Services
     public class AccountService: IAccountService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public AccountService(UserManager<ApplicationUser> userManager)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IEnumerable<IdentityError>> Register(RegisterModel model)
@@ -36,6 +39,21 @@ namespace AuthServer.Core.Services
             {
                 return result.Errors;
             }
+        }
+
+        public async Task<SignInResult> SignIn(SignInModel model)
+        {
+            return await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+        }
+
+        public async Task SignOut()
+        {
+            await _signInManager.SignOutAsync();
+        }
+
+        public bool IsUserSignIn(ClaimsPrincipal principal)
+        {
+            return _signInManager.IsSignedIn(principal);
         }
     }
 }
