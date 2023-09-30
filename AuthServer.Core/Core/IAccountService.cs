@@ -17,7 +17,7 @@ namespace AuthServer.Core.Core
         Task<SignInResult> SignIn(SignInModel model);
         Task SignOut();
         Task<IdentityResult> ConfirmRegistration(string userId, string code);
-        Task ChangeUserPassword(ChangeUserPasswordModel model, IPasswordValidator<ApplicationUser> validator, IPasswordHasher<ApplicationUser> hasher);
+        Task<IEnumerable<IdentityError>> ChangeUserPassword(ChangeUserPasswordModel model, IPasswordValidator<ApplicationUser> validator, IPasswordHasher<ApplicationUser> hasher);
         bool IsUserSignIn(ClaimsPrincipal principal);
     }
 }

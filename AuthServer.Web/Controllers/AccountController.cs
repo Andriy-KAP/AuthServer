@@ -66,10 +66,14 @@ namespace AuthServer.Web.Controllers
             {
                 try
                 {
-                    await _accountService.ChangeUserPassword(model,
+                    IEnumerable<IdentityError> errors = await _accountService.ChangeUserPassword(model,
                         HttpContext.RequestServices.GetService(typeof(IPasswordValidator<ApplicationUser>)) as IPasswordValidator<ApplicationUser>,
                         HttpContext.RequestServices.GetService(typeof(IPasswordHasher<ApplicationUser>)) as IPasswordHasher<ApplicationUser>);
                     
+                    if(errors.Any())
+                    {
+                        return BadRequest(errors);
+                    }
                     return Ok();
                 }
                 catch (Exception ex)
