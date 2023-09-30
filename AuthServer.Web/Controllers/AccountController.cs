@@ -1,5 +1,6 @@
 ﻿using AuthServer.Core.Core;
 using AuthServer.Core.Model;
+using AuthServer.Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +57,28 @@ namespace AuthServer.Web.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUserPassword(ChangeUserPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _accountService.ChangeUserPassword(model,
+                        HttpContext.RequestServices.GetService(typeof(IPasswordValidator<ApplicationUser>)) as IPasswordValidator<ApplicationUser>,
+                        HttpContext.RequestServices.GetService(typeof(IPasswordHasher<ApplicationUser>)) as IPasswordHasher<ApplicationUser>);
+                    
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, ex.Message);
+                }
+                
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpPost]

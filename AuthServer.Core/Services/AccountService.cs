@@ -77,5 +77,29 @@ namespace AuthServer.Core.Services
         {
             return _signInManager.IsSignedIn(principal);
         }
+
+        public async Task<IEnumerable<IdentityError>> ChangeUserPassword(ChangeUserPasswordModel model, IPasswordValidator<ApplicationUser> validator, IPasswordHasher<ApplicationUser> hasher)
+        {
+            ApplicationUser user = await _userManager.FindByEmailAsync(model.Email);
+            if(user != null)
+            {
+                IdentityResult result = await validator.ValidateAsync(_userManager, user, model.NewPassword);
+                if(result.Succeeded)
+                {
+                    user.PasswordHash = hasher.HashPassword(user, model.NewPassword);
+                    IdentityResult identityResult = await _userManager.UpdateAsync(user);
+                    if(identityResult.Succeeded) 
+                    { 
+                        return Enumerable.Empty<IdentityError>();
+                    }
+                    return identityResult.Errors;
+                }
+            }
+            else
+            {
+                throw new NullReferenceException("User not found");
+            }
+            return null;
+        }
     }
 }

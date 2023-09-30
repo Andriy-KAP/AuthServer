@@ -12,6 +12,14 @@ namespace AuthServer.Core.Services
 {
     public class EmailService : IEmailService
     {
+        private readonly string _emailFrom;
+        private readonly string _appPassword;
+
+        public EmailService(string emailFrom, string appPassword)
+        {
+            _emailFrom = emailFrom;
+            _appPassword = appPassword;
+        }
         public async Task SendEmail(string email, string subject, string message)
         {
             var emailMessage = new MimeMessage();
@@ -27,7 +35,7 @@ namespace AuthServer.Core.Services
             using (var client = new SmtpClient())
             {
                 await client.ConnectAsync("smtp.gmail.com", 465, true);
-                await client.AuthenticateAsync("andriykuklinov@gmail.com", "poha zffk nwkc wwlf");
+                await client.AuthenticateAsync(_emailFrom, _appPassword);
                 await client.SendAsync(emailMessage);
 
                 await client.DisconnectAsync(true);
