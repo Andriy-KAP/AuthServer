@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace AuthServer.Core.Core
 {
-    internal interface IRoleService
+    public interface IRoleService
     {
         Task<IdentityResult> AddRole(string role);
         Task<IdentityResult> RemoveRole(string id);
-        Task AddUserToRole(string userId, IEnumerable<string> rolesId);
+        Task AddUserToRoles(string userId, IEnumerable<string> rolesId);
+        IEnumerable<IdentityRole> GetRoles();
     }
 }

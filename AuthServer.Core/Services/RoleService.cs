@@ -1,6 +1,7 @@
 ﻿using AuthServer.Core.Core;
 using AuthServer.Domain.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,10 @@ namespace AuthServer.Core.Services
             _userManager = userManager;
         }
 
+        public IEnumerable<IdentityRole> GetRoles()
+        {
+            return _roleManager.Roles;
+        }
         public async Task<IdentityResult> AddRole(string role)
         {
             if(string.IsNullOrEmpty(role))
@@ -27,7 +32,7 @@ namespace AuthServer.Core.Services
             return await _roleManager.CreateAsync(new IdentityRole(role));
         }
 
-        public async Task AddUserToRole(string userId, IEnumerable<string> rolesId)
+        public async Task AddUserToRoles(string userId, IEnumerable<string> rolesId)
         {
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             if(user == null)
@@ -35,14 +40,12 @@ namespace AuthServer.Core.Services
                 throw new NullReferenceException($"Cannot find user with id {userId}");
             }
             IList<string> userRoles = await _userManager.GetRolesAsync(user);
-            List<IdentityRole> allRoles = _roleManager.Roles.ToList();
 
             List<string> addedRoles = rolesId.Except(userRoles).ToList<string>();
             List<string> removedRoles = userRoles.Except(rolesId).ToList<string>();
 
             await _userManager.AddToRolesAsync(user, addedRoles);
             await _userManager.RemoveFromRolesAsync(user, removedRoles);
-
         }
 
         public async Task<IdentityResult> RemoveRole(string id)
