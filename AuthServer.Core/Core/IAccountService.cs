@@ -19,5 +19,7 @@ namespace AuthServer.Core.Core
         Task<IdentityResult> ConfirmRegistration(string userId, string code);
         Task<IEnumerable<IdentityError>> ChangeUserPassword(ChangeUserPasswordModel model, IPasswordValidator<ApplicationUser> validator, IPasswordHasher<ApplicationUser> hasher);
         bool IsUserSignIn(ClaimsPrincipal principal);
+        Microsoft.AspNetCore.Authentication.AuthenticationProperties ExternalLogin(string provider, string returnUrl);
+        Task<bool> ExternalLoginCallback(string returnUrl, string remoteError);
     }
 }

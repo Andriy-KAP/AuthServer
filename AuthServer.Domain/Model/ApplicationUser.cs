@@ -8,7 +8,7 @@ namespace AuthServer.Domain.Model
 {
     public class ApplicationUser : IdentityUser
     {
-        public string Country { get; set; }
-        public string City { get; set; }
+        public string? Country { get; set; }
+        public string? City { get; set; }
     }
 }

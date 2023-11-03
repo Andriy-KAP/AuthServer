@@ -1,6 +1,7 @@
 ﻿using AuthServer.Core.Core;
 using AuthServer.Core.Model;
 using AuthServer.Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -122,6 +123,36 @@ namespace AuthServer.Web.Controllers
         public bool IsUserSignIn()
         {
             return _accountService.IsUserSignIn(User);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            string redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { returnUrl = returnUrl });
+            Microsoft.AspNetCore.Authentication.AuthenticationProperties properties =
+                _accountService.ExternalLogin(provider, redirectUrl);
+
+            return new ChallengeResult(provider, properties);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            try
+            {
+                bool result = await _accountService.ExternalLoginCallback(returnUrl, remoteError);
+                if (result)
+                {
+                    return Ok(returnUrl);
+                }
+                return BadRequest("Something went wrong.");
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

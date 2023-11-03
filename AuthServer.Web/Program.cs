@@ -22,6 +22,13 @@ builder.Services.AddDbContext<AuthServerContext>(options => options.UseSqlServer
 
 //Authentication
 builder.Services.AddAuthorization();
+builder.Services.AddAuthentication()
+    .AddFacebook(options =>
+    {
+        options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+        options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+        options.CallbackPath = "/api/Account/ExternalLoginCallback?returnUrl=&remoteError=";
+    });
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(
         options=>
         {

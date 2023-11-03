@@ -3,6 +3,8 @@ using AuthServer.Core.Core;
 using AuthServer.Core.Model;
 using AuthServer.Domain.Model;
 using Azure.Core;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
@@ -100,6 +102,56 @@ namespace AuthServer.Core.Services
                 throw new NullReferenceException("User not found");
             }
             return null;
+        }
+
+        public Microsoft.AspNetCore.Authentication.AuthenticationProperties ExternalLogin(string provider, string returnUrl)
+        {
+            Microsoft.AspNetCore.Authentication.AuthenticationProperties properties = 
+                _signInManager.ConfigureExternalAuthenticationProperties(provider, returnUrl);
+            return properties;
+        }
+
+        public async Task<bool> ExternalLoginCallback(string returnUrl, string remoteError)
+        {
+            if (!string.IsNullOrEmpty(remoteError))
+            {
+                throw new Exception(remoteError);
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if(info == null)
+            {
+                throw new Exception("Error during loading external login info");
+            }
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
+                isPersistent: false, bypassTwoFactor: true);
+            if(signInResult.Succeeded)
+            {
+                return true;
+            }
+            else
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if(email!= null)
+                {
+                    var user = await _userManager.FindByEmailAsync(email);
+                    if(user == null)
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
+                            Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        };
+
+                        await _userManager.CreateAsync(user);
+                    }
+
+                    await _userManager.AddLoginAsync(user, info);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
