@@ -32,7 +32,7 @@ builder.Services.AddAuthentication()
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(
         options=>
         {
-            options.User.RequireUniqueEmail = true;
+            options.User.RequireUniqueEmail = false;
         }
     ).AddEntityFrameworkStores<AuthServerContext>()
     .AddDefaultTokenProviders();
